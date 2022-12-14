@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.User;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,6 +17,9 @@ import java.util.List;
 public class JdbcUserDao implements UserDao {
 
     private JdbcTemplate jdbcTemplate;
+
+//    public JdbcUserDao() {
+//    }
 
     public JdbcUserDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -56,13 +60,16 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public boolean create(String username, String password) {
-
+        double initialBalance = 1000;
         // create user
         String sql = "INSERT INTO tenmo_user (username, password_hash) VALUES (?, ?) RETURNING user_id";
+        String sqlAccount = "INSERT INTO account (user_id,balance) VALUES(?,?) RETURNING account_id";
         String password_hash = new BCryptPasswordEncoder().encode(password);
         Integer newUserId;
+        Integer newAccountId;
         try {
             newUserId = jdbcTemplate.queryForObject(sql, Integer.class, username, password_hash);
+            newAccountId=jdbcTemplate.queryForObject(sqlAccount, Integer.class,newUserId,initialBalance);
         } catch (DataAccessException e) {
             return false;
         }
