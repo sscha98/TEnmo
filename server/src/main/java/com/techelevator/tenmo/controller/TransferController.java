@@ -31,30 +31,36 @@ public class TransferController {
     }
 
     @RequestMapping(path = "/transfers", method = RequestMethod.POST)
-    public void createNewTransfer(@RequestBody Transfer transfer,Principal principal) {
-        transferDao.addNewTransfer(transfer);
-        if (transfer.getTransferTypeId()==1){
-            userDao.sendMoney(transfer.getTransferAmount(), transfer.getSenderName());
-            userDao.receiveMoney(transfer.getTransferAmount(), transfer.getReceiverName());
-        }else if (transfer.getTransferTypeId()==2){
-            userDao.sendMoney(transfer.getTransferAmount(), transfer.getReceiverName());
-            userDao.receiveMoney(transfer.getTransferAmount(), transfer.getSenderName());
+    public String createNewTransfer(@RequestBody Transfer transfer, Principal principal) {
+        String transferStatusApproved = "Transfer Status: Approved!";
+        String transferStatusRejected = "Transfer Status: Rejected!";
+        Double userBalance = userDao.getAccountBalance(principal.getName());
+        if (transfer.getTransferAmount() <= 0 || transfer.getTransferAmount() > userBalance) {
+            return transferStatusRejected;
         }
-
-
-
+        else if ((transfer.getTransferTypeId() == 1) && !(principal.getName().equals(transfer.getReceiverName()))){
+            transferDao.addNewTransfer(transfer);
+            userDao.sendMoney(transfer.getTransferAmount(), principal.getName());
+            userDao.receiveMoney(transfer.getTransferAmount(), transfer.getReceiverName());
+            return transferStatusApproved;
+        }
+        else if ((transfer.getTransferTypeId() == 2) && !(principal.getName().equals(transfer.getReceiverName()))){
+            transferDao.addNewTransfer(transfer);
+            userDao.sendMoney(transfer.getTransferAmount(), transfer.getReceiverName());
+            userDao.receiveMoney(transfer.getTransferAmount(), principal.getName());
+            return transferStatusApproved;
+        }
+        return transferStatusRejected;
     }
-
 
     @RequestMapping(path = "/balance", method = RequestMethod.GET)
     public double currentBalance(Principal principal) {
         return userDao.getAccountBalance(principal.getName());
-
     }
+
     @RequestMapping(path = "/transfers", method = RequestMethod.GET)
     public List<Transfer> listTransfers(@RequestParam(defaultValue = "") String username) {
         return transferDao.list();
-
     }
     //@RequestMapping(value = "/account/{id}/balance", method = RequestMethod.GET)
     //public void balance(@PathVariable int id) {

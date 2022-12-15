@@ -19,9 +19,6 @@ public class JdbcUserDao implements UserDao {
 
     private JdbcTemplate jdbcTemplate;
 
-//    public JdbcUserDao() {
-//    }
-
     public JdbcUserDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -48,7 +45,6 @@ public class JdbcUserDao implements UserDao {
         String sql = "UPDATE account SET balance = ? WHERE user_id = (SELECT user_id FROM tenmo_user WHERE username = ?)";
         jdbcTemplate.update(sql,getAccountBalance(receiverName) + transferAmount,receiverName);
     }
-
 
     @Override
     public List<User> findAll() {
