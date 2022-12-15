@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,18 @@ public class JdbcUserDao implements UserDao {
         } else {
             return -1;
         }
+    }
+
+    @Override
+    public void sendMoney(double transferAmount, String senderName) {
+        String sql = "UPDATE account SET balance = ? WHERE user_id = (SELECT user_id FROM tenmo_user WHERE username = ?)";
+        jdbcTemplate.update(sql,getAccountBalance(senderName) -transferAmount,senderName);
+    }
+
+    @Override
+    public void receiveMoney(double transferAmount, String receiverName) {
+        String sql = "UPDATE account SET balance = ? WHERE user_id = (SELECT user_id FROM tenmo_user WHERE username = ?)";
+        jdbcTemplate.update(sql,getAccountBalance(receiverName) + transferAmount,receiverName);
     }
 
 
@@ -81,8 +94,11 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public double getAccountBalance(int userId) {
-        return 0;
+    public double getAccountBalance(String username) {
+
+        String sql = "SELECT balance FROM account WHERE user_id = (SELECT user_id FROM tenmo_user WHERE username = ?)";
+        double balance  = jdbcTemplate.queryForObject(sql,Double.class,username);
+        return balance;
     }
 
     private User mapRowToUser(SqlRowSet rs) {
