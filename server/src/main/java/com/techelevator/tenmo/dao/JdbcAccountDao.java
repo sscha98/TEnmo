@@ -1,23 +1,17 @@
 package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.model.Account;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpHeaders;
-import java.security.Principal;
 
 @Component
-public class JdbcAccount implements AccountDao {
+public class JdbcAccountDao implements AccountDao {
     private UserDao userDao;
     JdbcTemplate jdbcTemplate;
 
 
-    public JdbcAccount(UserDao userDao) {
+    public JdbcAccountDao(UserDao userDao) {
         this.userDao = userDao;
     }
 
@@ -32,9 +26,10 @@ public class JdbcAccount implements AccountDao {
     public double getAccountBalance(int userId) {
         Account account = null;
         String sql = "SELECT * FROM account WHERE user_id = ?";
+
         SqlRowSet result = jdbcTemplate.queryForRowSet(sql,userId);
 
-        // put try catch/ exception handling
+         //put try catch/ exception handling
         if (result.next()){
             account = mapRowToAccount(result);
         }

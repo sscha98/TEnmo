@@ -24,15 +24,27 @@ public class TransferController {
     private AccountDao accountDao;
     private UserDao userDao;
 
-    public TransferController(TransferDao transferDao) {
+    public TransferController(TransferDao transferDao,AccountDao accountDao, UserDao userDao) {
         this.transferDao = transferDao;
-        //this.userDao = userDao;
-        //this.accountDao = new JdbcAccount(userDao);
+        this.userDao = userDao;
+        this.accountDao = accountDao;
     }
 
     @RequestMapping(path = "/transfers", method = RequestMethod.POST)
     public void createNewTransfer(@RequestBody Transfer transfer) {
         transferDao.addNewTransfer(transfer);
+    }
+
+
+    @RequestMapping(path = "/balance", method = RequestMethod.GET)
+    public void currentBalance(@RequestBody Principal principal) {
+        accountDao.getAccountBalance(accountDao.findAccountIdByUsername(principal.getName()));
+
+    }
+    @RequestMapping(path = "/transfers", method = RequestMethod.GET)
+    public List<Transfer> listTransfers(@RequestParam(defaultValue = "") String username) {
+        return transferDao.list();
+
     }
     //@RequestMapping(value = "/account/{id}/balance", method = RequestMethod.GET)
     //public void balance(@PathVariable int id) {

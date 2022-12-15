@@ -36,6 +36,7 @@ public class JdbcUserDao implements UserDao {
         }
     }
 
+
     @Override
     public List<User> findAll() {
         List<User> users = new ArrayList<>();
@@ -77,6 +78,11 @@ public class JdbcUserDao implements UserDao {
         // TODO: Create the account record with initial balance
 
         return true;
+    }
+
+    @Override
+    public double getAccountBalance(int userId) {
+        return 0;
     }
 
     private User mapRowToUser(SqlRowSet rs) {
