@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface TransferDao {
     Transfer addNewTransfer(Transfer transfer);
-    List<Transfer> list();
+    List<Transfer> listByUserId(int userId);
 }

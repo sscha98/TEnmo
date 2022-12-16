@@ -14,9 +14,10 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.sql.ClientInfoStatus;
+import java.util.ArrayList;
 import java.util.List;
 
-//@PreAuthorize("isAuthenticated()")
+@PreAuthorize("isAuthenticated()")
 @RestController
 public class TransferController {
 
@@ -34,20 +35,20 @@ public class TransferController {
     public String createNewTransfer(@RequestBody Transfer transfer, Principal principal) {
         String transferStatusApproved = "Transfer Status: Approved!";
         String transferStatusRejected = "Transfer Status: Rejected!";
-        Double userBalance = userDao.getAccountBalance(principal.getName());
+        Double userBalance = userDao.getAccountBalance(userDao.findIdByUsername(principal.getName()));
         if (transfer.getTransferAmount() <= 0 || transfer.getTransferAmount() > userBalance) {
             return transferStatusRejected;
         }
-        else if ((transfer.getTransferTypeId() == 1) && !(principal.getName().equals(transfer.getReceiverName()))){
+        else if ((transfer.getTransferTypeId() == 1) && !(principal.getName().equals(transfer.getReceiverId()))){
             transferDao.addNewTransfer(transfer);
-            userDao.sendMoney(transfer.getTransferAmount(), principal.getName());
-            userDao.receiveMoney(transfer.getTransferAmount(), transfer.getReceiverName());
+            userDao.sendMoney(transfer.getTransferAmount(), userDao.findIdByUsername(principal.getName()));
+            userDao.receiveMoney(transfer.getTransferAmount(), transfer.getReceiverId());
             return transferStatusApproved;
         }
-        else if ((transfer.getTransferTypeId() == 2) && !(principal.getName().equals(transfer.getReceiverName()))){
+        else if ((transfer.getTransferTypeId() == 2) && !(principal.getName().equals(transfer.getReceiverId()))){
             transferDao.addNewTransfer(transfer);
-            userDao.sendMoney(transfer.getTransferAmount(), transfer.getReceiverName());
-            userDao.receiveMoney(transfer.getTransferAmount(), principal.getName());
+            userDao.sendMoney(transfer.getTransferAmount(), transfer.getReceiverId());
+            userDao.receiveMoney(transfer.getTransferAmount(), userDao.findIdByUsername(principal.getName()));
             return transferStatusApproved;
         }
         return transferStatusRejected;
@@ -55,12 +56,31 @@ public class TransferController {
 
     @RequestMapping(path = "/balance", method = RequestMethod.GET)
     public double currentBalance(Principal principal) {
-        return userDao.getAccountBalance(principal.getName());
+        return userDao.getAccountBalance(userDao.findIdByUsername(principal.getName()));
+    }
+
+    @RequestMapping(path = "/transfers/users",method = RequestMethod.GET)
+    public List<String> listUsernames(Principal principal){
+        List<String> usernames = new ArrayList<>();
+        List<User> tenmoUsers = userDao.findAll();
+        for (User user : tenmoUsers){
+            if (!principal.getName().equals(user.getUsername())){
+                usernames.add(user.getUsername());
+            }
+        }
+        return usernames;
     }
 
     @RequestMapping(path = "/transfers", method = RequestMethod.GET)
-    public List<Transfer> listTransfers(@RequestParam(defaultValue = "") String username) {
-        return transferDao.list();
+    public List<Transfer> listTransfers(Principal principal) {
+//        List<Transfer> transfers = transferDao.list();
+//        List<Transfer> userTransfers = new ArrayList<>();
+//        for (Transfer transfer : transfers){
+//            if (transfer.getSenderName().equals(principal.getName())|| transfer.getReceiverName().equals(principal.getName())){
+//                userTransfers.add(transfer);
+//            }
+//        }
+        return transferDao.listByUserId(userDao.findIdByUsername(principal.getName()));
     }
     //@RequestMapping(value = "/account/{id}/balance", method = RequestMethod.GET)
     //public void balance(@PathVariable int id) {

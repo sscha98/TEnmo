@@ -35,15 +35,15 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public void sendMoney(double transferAmount, String senderName) {
-        String sql = "UPDATE account SET balance = ? WHERE user_id = (SELECT user_id FROM tenmo_user WHERE username = ?)";
-        jdbcTemplate.update(sql,getAccountBalance(senderName) -transferAmount,senderName);
+    public void sendMoney(double transferAmount, int senderId) {
+        String sql = "UPDATE account SET balance = ? WHERE user_id = ?";
+        jdbcTemplate.update(sql,getAccountBalance(senderId) -transferAmount,senderId);
     }
 
     @Override
-    public void receiveMoney(double transferAmount, String receiverName) {
-        String sql = "UPDATE account SET balance = ? WHERE user_id = (SELECT user_id FROM tenmo_user WHERE username = ?)";
-        jdbcTemplate.update(sql,getAccountBalance(receiverName) + transferAmount,receiverName);
+    public void receiveMoney(double transferAmount, int receiverId) {
+        String sql = "UPDATE account SET balance = ? WHERE user_id = ?";
+        jdbcTemplate.update(sql,getAccountBalance(receiverId) + transferAmount,receiverId);
     }
 
     @Override
@@ -90,10 +90,10 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public double getAccountBalance(String username) {
+    public double getAccountBalance(int userId) {
 
-        String sql = "SELECT balance FROM account WHERE user_id = (SELECT user_id FROM tenmo_user WHERE username = ?)";
-        double balance  = jdbcTemplate.queryForObject(sql,Double.class,username);
+        String sql = "SELECT balance FROM account WHERE user_id = ?";
+        double balance  = jdbcTemplate.queryForObject(sql,Double.class,userId);
         return balance;
     }
 

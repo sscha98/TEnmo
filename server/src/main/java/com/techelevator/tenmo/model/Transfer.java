@@ -6,12 +6,13 @@ public class Transfer {
 
     private int id;
     private int transferTypeId;
-    private String senderName;
-    private String receiverName;
+//    private String senderName;
+//    private String receiverName;
+    private int senderId;
+    private int receiverId;
     private double transferAmount;
 
-    @JsonProperty("isPrivate")
-    private boolean isPrivate = false;
+
 
     public int getId() {
         return id;
@@ -25,28 +26,43 @@ public class Transfer {
     public void setTransferTypeId(int messageTypeId) {
         this.transferTypeId = messageTypeId;
     }
-    public String getSenderName() {
-        return senderName;
+
+    public int getSenderId() {
+        return senderId;
     }
-    public void setSenderName(String senderName) {
-        this.senderName = senderName;
+
+    public void setSenderId(int senderId) {
+        this.senderId = senderId;
     }
-    public String getReceiverName() {
-        return receiverName;
+
+    public int getReceiverId() {
+        return receiverId;
     }
-    public void setReceiverName(String receiverName) {
-        this.receiverName = receiverName;
+
+    public void setReceiverId(int receiverId) {
+        this.receiverId = receiverId;
     }
+
     public double getTransferAmount() {
         return transferAmount;
     }
     public void setTransferAmount(double transferAmount) {
         this.transferAmount = transferAmount;
     }
-    public boolean isPrivate() {
-        return isPrivate;
-    }
-    public void setPrivate(boolean isPrivate) {
-        this.isPrivate = isPrivate;
-    }
+
+
+//    public String getSenderName() {
+//        return senderName;
+//    }
+//    public void setSenderName(String senderName) {
+//        this.senderName = senderName;
+//    }
+//    public String getReceiverName() {
+//        return receiverName;
+//    }
+//    public void setReceiverName(String receiverName) {
+//        this.receiverName = receiverName;
+//    }
+
+
 }

@@ -12,8 +12,8 @@ public interface UserDao {
     User findByUsername(String username);
 
     int findIdByUsername(String username);
-    void sendMoney(double transferAmount,String username);
-    void receiveMoney(double transferAmount, String username);
+    void sendMoney(double transferAmount,int senderId);
+    void receiveMoney(double transferAmount, int receiverId);
     boolean create(String username, String password);
-    double getAccountBalance(String username);
+    double getAccountBalance(int userId);
 }
