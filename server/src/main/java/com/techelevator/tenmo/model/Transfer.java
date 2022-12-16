@@ -3,13 +3,14 @@ package com.techelevator.tenmo.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Transfer {
-
+    //Transfer class variables that match the column variables of the sql transfer table
     private int id;
     private int transferTypeId;
     private int senderId;
     private int receiverId;
     private double transferAmount;
 
+    //empty constructor and constructor with transfer variable parameters
     public Transfer() {
     }
 
@@ -20,7 +21,7 @@ public class Transfer {
         this.receiverId = receiverId;
         this.transferAmount = transferAmount;
     }
-
+    //getters and setters for the variables
     public int getId() {
         return id;
     }
@@ -57,19 +58,6 @@ public class Transfer {
         this.transferAmount = transferAmount;
     }
 
-
-//    public String getSenderName() {
-//        return senderName;
-//    }
-//    public void setSenderName(String senderName) {
-//        this.senderName = senderName;
-//    }
-//    public String getReceiverName() {
-//        return receiverName;
-//    }
-//    public void setReceiverName(String receiverName) {
-//        this.receiverName = receiverName;
-//    }
 
 
 }

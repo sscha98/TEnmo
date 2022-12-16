@@ -36,17 +36,33 @@ public class JdbcUserDaoTests extends BaseDaoTests{
     }
 
     @Test
-    public void getBalanceWorks() {
+    public void testBalanceGetter(){
 
+
+        double expected = 1000;
+        double actual =  sut.getAccountBalance(1002);
+        Assert.assertEquals(expected,actual,.00009);
     }
-
     @Test
     public void testChangesInBalance() {
-        boolean transferCreated = sutTransfer.addNewTransfer(TRANSFER_1);
+        sut.create("TEST_USER1","test_password");
+        User user1 = sut.findByUsername("TEST_USER1");
+        sut.create("TEST_USER2","test_password");
+        User user2 = sut.findByUsername("TEST_USER2");
+
+        Transfer transfer = new Transfer(3001,1, user1.getId(), user2.getId(),50.00);
+        boolean transferCreated = sutTransfer.addNewTransfer(transfer);
         Assert.assertTrue(transferCreated);
 
-        int id = sut.findIdByUsername("bob");
-        Assert.assertEquals(sut.getAccountBalance(id), 950.00, 0.00000009);
+        double senderExpectedBalance = 950.00;
+        double receiverExpectedBalance = 1050.00;
+
+        double actualSenderBalance = sut.getAccountBalance(user1.getId());
+        double actualReceiverBalance = sut.getAccountBalance(user2.getId());
+
+        //int id = sut.findIdByUsername("bob");
+        Assert.assertEquals(senderExpectedBalance, actualSenderBalance, 0.00000009);
+        Assert.assertEquals(receiverExpectedBalance, actualReceiverBalance, 0.00000009);
     }
 
 }
