@@ -2,6 +2,7 @@ package com.techelevator.tenmo.dao;
 
 
 import com.techelevator.tenmo.model.Transfer;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
@@ -21,17 +22,23 @@ public class JdbcTransferDao implements TransferDao{
     }
 
     @Override
-    public Transfer addNewTransfer(Transfer transfer) {
+    public boolean addNewTransfer(Transfer transfer) {
 
         String sql = "INSERT INTO transfer(transfer_id, transfer_type_id, sender_id, receiver_id, transfer_amount) VALUES (Default,?,?,?,?) RETURNING transfer_id;";
-//        Integer newId = jdbcTemplate.queryForObject(sql,
-//                Integer.class, transfer.getTransferTypeId(), transfer.getSenderName(), transfer.getReceiverName(), transfer.getTransferAmount());
-        Integer newId = jdbcTemplate.queryForObject(sql,
+        Integer newId;
+        try{
+            newId = jdbcTemplate.queryForObject(sql,
                 Integer.class, transfer.getTransferTypeId(), transfer.getSenderId(), transfer.getReceiverId(), transfer.getTransferAmount());
-        transfer.setId(newId);
-        transfers.add(transfer);
-        return transfer;
+            transfer.setId(newId);
+            transfers.add(transfer);
+
+        }catch (DataAccessException e){
+            return false;
+        }
+
+        return true;
     }
+
 
     @Override
     public List<Transfer> listByUserId(int userId) {
@@ -45,6 +52,18 @@ public class JdbcTransferDao implements TransferDao{
         return userTransfers;
     }
 
+    @Override
+    public Transfer findByTransferId(int transferId) {
+        String sql = "SELECT * FROM transfer WHERE transfer_id = ?";
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql,transferId);
+        if (rowSet.next()){
+            return mapRowSetToTransfers(rowSet);
+        }else {
+            return null;
+        }
+
+    }
+
 
     private Transfer mapRowSetToTransfers(SqlRowSet results) {
         Transfer transfer = new Transfer();
@@ -52,8 +71,6 @@ public class JdbcTransferDao implements TransferDao{
         transfer.setTransferTypeId(results.getInt("transfer_type_id"));
         transfer.setSenderId(results.getInt("sender_id"));
         transfer.setReceiverId(results.getInt("receiver_id"));
-//        transfer.setSenderName(results.getString("sender_name"));
-//        transfer.setReceiverName(results.getString("receiver_name"));
         transfer.setTransferAmount(results.getDouble("transfer_amount"));
         return transfer;
     }

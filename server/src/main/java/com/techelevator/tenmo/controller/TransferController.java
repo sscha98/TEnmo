@@ -71,6 +71,19 @@ public class TransferController {
         return users;
     }
 
+    @RequestMapping(path = "/transfers/{id}",method = RequestMethod.GET)
+    public Transfer getTransferById(@PathVariable int id, Principal principal){
+
+
+        Transfer transfer = transferDao.findByTransferId(id);
+        if ((userDao.findIdByUsername(principal.getName())==transfer.getReceiverId()) || (userDao.findIdByUsername(principal.getName())==transfer.getSenderId())){
+            return transfer;
+        }else {
+            return null;
+        }
+
+    }
+
     @RequestMapping(path = "/transfers", method = RequestMethod.GET)
     public List<Transfer> listTransfers(Principal principal) {
 //        List<Transfer> transfers = transferDao.list();
