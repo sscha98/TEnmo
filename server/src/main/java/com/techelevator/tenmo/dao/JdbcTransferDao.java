@@ -64,7 +64,6 @@ public class JdbcTransferDao implements TransferDao{
 
     }
 
-
     private Transfer mapRowSetToTransfers(SqlRowSet results) {
         Transfer transfer = new Transfer();
         transfer.setId(results.getInt("transfer_id"));

@@ -67,9 +67,9 @@ VALUES ('bob', '$2a$10$G/MIQ7pUYupiVi72DxqHquxl73zfd7ZLNBoB2G6zUb.W16imI2.W2'),
        ('user', '$2a$10$Ud8gSvRS4G1MijNgxXWzcexeXlVs4kWDOkjE7JFIkNLKEuE57JAEy');
 
 INSERT INTO transfer (transfer_id,transfer_type_id,sender_id,receiver_id,transfer_amount)
-VALUES (3001,1,1001,1002,50.00);
+VALUES (4001,1,1001,1002,50.00);
 INSERT INTO transfer (transfer_id,transfer_type_id,sender_id,receiver_id,transfer_amount)
-VALUES (3002,1,1002,1001,100.00);
+VALUES (4002,1,1002,1001,100.00);
 
 
 
