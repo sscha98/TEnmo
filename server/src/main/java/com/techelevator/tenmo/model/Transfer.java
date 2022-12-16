@@ -6,13 +6,20 @@ public class Transfer {
 
     private int id;
     private int transferTypeId;
-//    private String senderName;
-//    private String receiverName;
     private int senderId;
     private int receiverId;
     private double transferAmount;
 
+    public Transfer() {
+    }
 
+    public Transfer(int id, int transferTypeId, int senderId, int receiverId, double transferAmount) {
+        this.id = id;
+        this.transferTypeId = transferTypeId;
+        this.senderId = senderId;
+        this.receiverId = receiverId;
+        this.transferAmount = transferAmount;
+    }
 
     public int getId() {
         return id;

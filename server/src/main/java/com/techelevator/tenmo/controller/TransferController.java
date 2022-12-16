@@ -60,15 +60,15 @@ public class TransferController {
     }
 
     @RequestMapping(path = "/transfers/users",method = RequestMethod.GET)
-    public List<String> listUsernames(Principal principal){
-        List<String> usernames = new ArrayList<>();
+    public List<String> listUsernameAndId(Principal principal){
+        List<String> users = new ArrayList<>();
         List<User> tenmoUsers = userDao.findAll();
         for (User user : tenmoUsers){
             if (!principal.getName().equals(user.getUsername())){
-                usernames.add(user.getUsername());
+                users.add(user.getUsername() + " : " + user.getId());
             }
         }
-        return usernames;
+        return users;
     }
 
     @RequestMapping(path = "/transfers", method = RequestMethod.GET)
