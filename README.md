@@ -1,4 +1,4 @@
-# Module 2 Capstone - TEnmo (Pair programming assignment from TECH ELEVETOR)
+# Module 2 Capstone - TEnmo (Pair programming assignment for TECH ELEVETOR)
 1. A user of the system can register with a username and password.
 2. A user of the system can log in with registered username and password.
    1. User ids start at 1001.
