@@ -16,4 +16,4 @@
    7. A zero or negative amount can not be sent or received
    9. Transfer ids start at 3001.
 6. As an authenticated user of the system, the user can view previous transfers (Sent or Received funds)
-7. As an authenticated user of the system, the user can retrieve the details of any transfer based upon the transfer ID.
+7. As an authenticated user of the system, the user can retrieve the details of any transfer based upon the transfer ID.  
